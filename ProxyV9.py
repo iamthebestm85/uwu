@@ -1,153 +1,171 @@
+import requests
+from concurrent.futures import ThreadPoolExecutor
 import os
 import sys
-import requests
-import nguyenthanhngoc
-from nguyenthanhngoc import *
 import time
 from time import sleep
-from urllib3.exceptions import InsecureRequestWarning
-from urllib3 import disable_warnings
+import random
+import subprocess
 
-disable_warnings(InsecureRequestWarning)
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
+
+clear()
 
 def check_internet_connection():
     try:
-       response = requests.get("https://www.google.com/", timeout=5)
-       return True
+        response = requests.get("https://www.google.com", timeout=5)
+        return True
     except requests.ConnectionError:
-       return False
+        return False
+
 if not check_internet_connection():
-    print("\n\033[1;36mCó Cl Nhá:)")
+    print("\n\033[1;31mNo internet connection! Exiting...")
     sys.exit(1)
-def clear():
-    os.system("cls" if os.name == "nt" else "clear")
+
+def loading(seconds):
+    print("\033[1;35mLoading", end="", flush=True)
+    for _ in range(seconds):
+        time.sleep(1)
+        print("!", end="", flush=True)
+    print("\n\033[1;35mDone!")
+    sleep(2)
+
+loading(5)
+
 clear()
 
-Write.Print(f"""
+# Custom print function to simulate rainbow effect
+def rainbow_print(text, interval=0.005):
+    colors = [
+        "\033[1;31m", "\033[1;33m", "\033[1;32m",
+        "\033[1;34m", "\033[1;35m", "\033[1;36m"
+    ]
+    for char in text:
+        print(f"{random.choice(colors)}{char}", end="", flush=True)
+        time.sleep(interval)
+    print("\033[0m")
 
-            ░██████╗░░░░░█████╗░███╗░░██╗██╗░░██╗
-            ██╔═══██╗░░░██╔══██╗████╗░██║██║░░██║
-            ██║██╗██║░░░███████║██╔██╗██║███████║
-            ╚██████╔╝░░░██╔══██║██║╚████║██╔══██║
-            ░╚═██╔═╝░██╗██║░░██║██║░╚███║██║░░██║
-            ░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝
-    ┌───────────────────└┐ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 └┐──────────────────┐
-    │
-    │   𝐓𝐎𝐎𝐋 𝐍𝐀𝐌𝐄: Get Proxy V9
-    │   𝐕𝐄𝐑𝐒𝐈𝐎𝐍: 9.0
-    │   𝐔𝐏𝐃𝐀𝐓𝐄𝐃 𝐎𝐍 𝐃𝐀𝐓𝐄: 22/03/2025
-    │   𝐓𝐎𝐎𝐋 𝐀𝐃𝐌𝐈𝐍: Cá Tool - [ Dương Ngọc 💘 Quỳnh Anh ]
-    │
-    └──────────────────────────────────────────────────┘
-\n""", Colors.rainbow, interval=0.005)
+rainbow_print(f"""
+████████╗██╗ ██╗ █████╗ ███╗ ██╗██╗ ██╗ ██╗ ██╗██╗ ██╗
+╚══██╔══╝██║ ██║██╔══██╗████╗ ██║██║ ██║ ██║ ██║╚██╗ ██╔╝
+   ██║   ███████║███████║██╔██╗ ██║███████║ ██║ ██║ ╚████╔╝
+   ██║   ██╔══██║██╔══██║██║╚██╗██║██╔══██║ ╚██╗ ██╔╝ ╚██╔╝
+   ██║   ██║ ██║██║ ██║██║ ╚████║██║ ██║ ╚████╔╝ ██║
+   ╚═╝   ╚═╝ ╚═╝╚═╝ ╚═╝╚═╝ ╚═══╝╚═╝ ╚═╝ ╚═══╝ ╚═╝
+┌───────────────────└┐ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 └┐──────────────────┐
+│
+│ 𝐓𝐎𝐎𝐋 𝐍𝐀𝐌𝐄: Check Proxy V9
+│ 𝐕𝐄𝐑𝐒𝐈𝐎𝐍: 9.0
+│ 𝐔𝐏𝐃𝐀𝐓𝐄𝐃 𝐎𝐍 𝐃𝐀𝐓𝐄: 26/07/2025
+│ 𝐓𝐎𝐎𝐋 𝐀𝐃𝐌𝐈𝐍: Alex
+│
+└──────────────────────────────────────────────────┘
+""", interval=0.005)
 
-proxies = []
+print("\033[1;32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+proxy_file = "Quyt.txt"
+output_file = "working.txt"
+webhook_url = "https://discord.com/api/webhooks/1384157631718887485/b186_uowMcKtkNhFsfZ2-UwbDoahXStbgwaWU0ZpUIE9QN8D19s99pytNcmWWIu7U2Dy"
 
-proxy_links = [
-                   "https://api.proxyscrape.com/?request=displayproxies&proxytype=http",
-                   "https://daudau.org/api/http.txt",
-                   "https://api.openproxylist.xyz/http.txt",
-                   "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
-                   "http://worm.rip/http.txt",
-                   "https://proxy-spider.com/api/proxies.example.txt",
-                   "https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt",
-                   "https://proxyspace.pro/http.txt",
-                   "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-https.txt",
-                   "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt",
-                   "https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt",
-                   "https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/http/http.txt",
-                   "https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt",
-                   "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
-                   "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
-                   "https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
-                   "https://raw.githubusercontent.com/mmpx12/proxy-list/master/https.txt",
-                   "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
-                   "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/https.txt",
-                   "https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt",
-                   "https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/http.txt",
-                   "https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/https.txt",
-                   "https://firet.io/firetx_retro/datacanthiet/proxies.txt",
-                   "https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt",
-                   "https://raw.githubusercontent.com/almroot/proxylist/master/list.txt",
-                   "https://openproxylist.xyz/http.txt",
-                   "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/http.txt",
-                   "http://rootjazz.com/proxies/proxies.txt",
-                   "https://api.proxyscrape.com/?request=displayproxies&proxytype=https",
-                   "https://www.proxy-list.download/api/v1/get?type=http",
-                   "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
-                   "https://api.openproxylist.xyz/http.txt",
-                   "https://raw.githubusercontent.com/shiftytr/proxy-list/master/proxy.txt",
-                   "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt",
-                   "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
-                   "https://raw.githubusercontent.com/sunny9577/proxy-scraper/master/proxies.txt",
-                   "https://raw.githubusercontent.com/opsxcq/proxy-list/master/list.txt",
-                   "https://proxy-spider.com/api/proxies.example.txt",
-                   "https://multiproxy.org/txt_all/proxy.txt",
-                   "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
-                   "https://proxyspace.pro/https.txt",
-                   "https://raw.githubusercontent.com/almroot/proxylist/master/list.txt",
-                   "https://raw.githubusercontent.com/aslisk/proxyhttps/main/https.txt",
-                   "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/HTTP.txt",
-                   "https://raw.githubusercontent.com/hendrikbgr/Free-Proxy-Repo/master/proxy_list.txt",
-                   "https://raw.githubusercontent.com/ALIILAPRO/Proxy/main/http.txt",
-                   "https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
-                   "https://raw.githubusercontent.com/mmpx12/proxy-list/master/https.txt",
-                   "https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt",
-                   "https://raw.githubusercontent.com/saisuiu/uiu/main/free.txt",
-                   "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/https.txt",
-                   "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies/http.txt",
-                   "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
-                   "https://www.proxy-list.download/api/v1/get?type=https",
-                   "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt",
-                   "https://raw.githubusercontent.com/saisuiu/Lionkings-Http-Proxys-Proxies/main/free.txt",
-                   "https://raw.githubusercontent.com/saisuiu/Lionkings-Http-Proxys-Proxies/main/cnfree.txt",
-                   "https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/http.txt",
-                   "https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/https.txt",
-                   "https://raw.githubusercontent.com/zevtyardt/proxy-list/main/http.txt",
-                   "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
-                   "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/master/http.txt",
-                   "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies_anonymous/http.txt",
-                   "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies/http.txt",
-                   "https://sunny9577.github.io/proxy-scraper/proxies.txt"
-]
-print("\033[1;36m       Get Proxy V9 - Update: Loại Bỏ Các Api Time Out Và Api Get Lỗi")
-print("\033[1;36m       Tool Coded By Dương Ngọc 💘 Quynh Anh 🌷")
-print("\033[1;36m       Proxy Save File Quyt.txt")
-for site in proxy_links:
-    try:
-        response = requests.get(site, verify=False, timeout=10)
-        if response.status_code == 200:
-            for line in response.text.split("\n"):
-                if ':' in line:
-                    ip, port = line.split(':', maxsplit=2)[:2]
-                    proxies.append(f'{ip}:{port}')
-    except Exception as e:
-        print(" ")
+try:
+    with open(proxy_file, 'r') as file:
+        proxy_list = [line.strip() for line in file if line.strip()]
+except FileNotFoundError:
+    print(f"\033[1;31mError: {proxy_file} not found!")
+    sys.exit(1)
 
-with open('Quyt.txt', 'w') as f:
-    for proxy in proxies:
-        f.write(proxy + '\n')
-def clear():
-    os.system("cls" if os.name == "nt" else "clear")
-clear()
-Write.Print(f"""
-
-            ░██████╗░░░░░█████╗░███╗░░██╗██╗░░██╗
-            ██╔═══██╗░░░██╔══██╗████╗░██║██║░░██║
-            ██║██╗██║░░░███████║██╔██╗██║███████║
-            ╚██████╔╝░░░██╔══██║██║╚████║██╔══██║
-            ░╚═██╔═╝░██╗██║░░██║██║░╚███║██║░░██║
-            ░░░╚═╝░░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝
-    ┌───────────────────└┐ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 └┐──────────────────┐
-    │
-    │   𝐓𝐎𝐎𝐋 𝐍𝐀𝐌𝐄: Get Proxy V9
-    │   𝐕𝐄𝐑𝐒𝐈𝐎𝐍: 9.0
-    │   𝐔𝐏𝐃𝐀𝐓𝐄𝐃 𝐎𝐍 𝐃𝐀𝐓𝐄: 22/03/2025
-    │   𝐓𝐎𝐎𝐋 𝐀𝐃𝐌𝐈𝐍: Cá Tool - [ Dương Ngọc 💘 Quỳnh Anh 🌷]
-    │
-    └──────────────────────────────────────────────────┘
-\n""", Colors.red, interval=0.005)
-sleep(10)
-print("\033[1;36mĐang Chuyển Hướng Tới Check Proxy")
+proxy_count = len(proxy_list)
+print(f"\033[1;31mTotal Proxies: \033[1;37m{proxy_count} \033[1;31mProxies in File")
+print("\033[1;34mPlease wait... \033[1;37mTool\033[1;31m is starting \033[1;37mto check \033[1;31mProxies")
+print("\033[1;32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 sleep(3)
-os.system ('clear && python Check.py')
+
+def check_proxy(proxy):
+    proxies = {
+        'http': f'http://{proxy}',
+        'https': f'http://{proxy}'
+    }
+    try:
+        response = requests.get('http://httpbin.org/ip', proxies=proxies, timeout=5)
+        if response.status_code in [200, 202, 500, 502, 503, 504]:
+            detect_location(proxy)
+            return True
+    except requests.exceptions.RequestException:
+        pass
+    print(f"\033[1;37m[\033[1;31m★\033[1;37m] \033[1;37m{proxy} \033[1;31m× \033[1;37mDead \033[1;31m×")
+    return False
+
+def detect_location(proxy):
+    ip_address = proxy.split(':')[0]
+    url = f"http://ip-api.com/json/{ip_address}"
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            if data["status"] == "success":
+                print(f"\033[1;37m[\033[1;31m★\033[1;37m] \033[1;37m{proxy} \033[1;31m√ \033[1;37m{data['country']}/{data['city']} \033[1;31m√ \033[1;32mLive")
+                with open(output_file, 'a') as f:
+                    f.write(proxy + '\n')
+            else:
+                print(f"\033[1;37m[\033[1;31m+\033[1;37m] \033[1;31mFailed to detect location for {proxy}")
+    except requests.exceptions.RequestException:
+        print(f"\033[1;37m[\033[1;31m+\033[1;37m] \033[1;31mFailed to detect location for {proxy}")
+
+def send_to_discord(live_count):
+    try:
+        with open(output_file, 'rb') as f:
+            files = {'file': (output_file, f)}
+            data = {'content': f'Proxy check completed. Found {live_count} live proxies.'}
+            response = requests.post(webhook_url, data=data, files=files)
+            if response.status_code == 204:
+                print("\033[1;32mSuccessfully sent working1.txt to Discord webhook!")
+            else:
+                print(f"\033[1;31mFailed to send to Discord: {response.status_code}")
+    except FileNotFoundError:
+        print(f"\033[1;31mError: {output_file} not found!")
+    except requests.exceptions.RequestException as e:
+        print(f"\033[1;31mError sending to Discord: {e}")
+
+def delete_files():
+    for file in [proxy_file, output_file]:
+        try:
+            if os.path.exists(file):
+                os.remove(file)
+                print(f"\033[1;32mDeleted {file} successfully!")
+        except OSError as e:
+            print(f"\033[1;31mError deleting {file}: {e}")
+
+def process_proxy(proxy):
+    if check_proxy(proxy):
+        pass
+
+num_workers = 200
+with ThreadPoolExecutor(max_workers=num_workers) as executor:
+    executor.map(process_proxy, proxy_list)
+
+try:
+    with open(output_file, 'r') as f:
+        live_count = len(f.readlines())
+except FileNotFoundError:
+    live_count = 0
+
+print(f"\033[1;31mProxy check completed - saved to \033[1;37m{output_file} \033[1;31mwith \033[1;37m{live_count} \033[1;31mlive proxies")
+print("\033[1;31mThank you for using the tool")
+
+# Send to Discord webhook
+send_to_discord(live_count)
+
+# Delete input and output files
+delete_files()
+
+# Re-run the script
+print("\033[1;32mRe-running ProxyV9.py...")
+try:
+    subprocess.run(["python3", "ProxyV9.py"], check=True)
+except subprocess.CalledProcessError as e:
+    print(f"\033[1;31mError re-running ProxyV9.py: {e}")
+    sys.exit(1)
+
+input("Press enter to exit")
+sys.exit(0)
